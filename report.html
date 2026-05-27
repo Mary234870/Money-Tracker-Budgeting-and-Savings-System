@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        body {
+            font-family:'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F9F9FA;
+            display: flex;
+        }
+        .profile {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 1em;
+            margin-left: 45px;
+            object-fit: cover;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2A0764;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+        }
+        .sidebar h2 {
+            margin-bottom: 30px;
+            color: white;           
+            text-align: center;
+        }
+        .sidebar p {
+            color: white;
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+        .sidebar a {
+            display: flex;
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            height: fit-content;
+        }
+        .sidebar a:hover {
+            color: #555;
+            background: #F5F5F5;
+        }
+        .sidebar i {
+            margin-right: 10px;
+        }
+        .report-content {
+            margin-left: 310px;
+            padding: 20px;
+            font-size: 15px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .header h2 {
+            color: #333;
+        }
+        .header .user-info {
+            text-align: right;
+        }
+        .header i {
+            margin-right: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+        .statistics-section {
+            align-items: center;
+            padding: 15px;
+            font-size: 15px;
+            width: 880px;
+            background-color: #F9F9FA;
+            outline: 3px solid #1F054B;
+            border-radius: 20px;
+            min-height: 600px;
+        }
+        .chart-container {
+            width: 60%;
+            height: 300px;
+            text-align: center;
+        }
+        .tips-container {
+            width: 30%;
+            height: 300px;
+            background: #F7F7F7;
+            text-align: center;
+            line-height: 100px;
+            color: #999;
+            border: 1px dashed #ccc;
+        }
+        .tips-container button {
+            padding: 10px 20px;
+            background: #2F4F7F;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .transaction-table th, .transaction-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .transaction-table th {
+            background-color: #f2f2f2;
+        }
+        .transaction-table .delete-transaction {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .transaction-table .delete-transaction:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+   <div class="sidebar">
+        <a href="profile PT.html" style="background-color: #2A0764;">
+            <img id="navProfileImg" src="c:\Users\acer\Downloads\e183fad7-9c43-49e0-b3d7-2d4770ad4dfb.jpg"
+                class="profile" alt="profile">
+            <i style="margin-top: 125px;" class="fa-solid fa-pen-to-square"></i>
+        </a>
+        <h2 id="fullName">Patricia Bernales</h2>
+        <p id="userEmail">@bernales</p>
+        <ul>
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
+            <li><a href="report.html"><i class="fa-solid fa-chart-line"></i>Reports</a></li>
+            <li><a href="budgeting.html"><i class="fa-solid fa-wallet"></i>Budgeting</a></li>
+            <p>_____________________________</p>
+            <li><a href="settings.html"><i class="fa-solid fa-gear"></i>Settings</a></li>
+            <li><a href="help.html"><i class="fa-solid fa-circle-question"></i>Help</a></li>
+            <li><a href="#" id="delete-data"><i class="fa-solid fa-trash"></i>Delete all data</a></li>
+            <li><a href="homepage.html"><i class="fa-solid fa-right-from-bracket"></i>Log out</a></li>
+        </ul>
+    </div>
+    <div class="report-content">
+        <div class="header">
+            <h2 id="page-title">Report</h2>
+            <div class="user-info">
+                <input type="text" id="search" placeholder="&#128269; Search here...">
+                <i class="fa-solid fa-bell"></i>
+                <a href="calendar.html"><i class="fa-solid fa-calendar"></i></a>
+            </div>
+        </div>
+         
+        <div class="statistics-section">
+            <h2>Detailed Spending Report</h2>
+            <div style="display: flex; justify-content: space-between;">
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                <div class="tips-container">
+                    <button id="generate-tips">Generate Tips</button>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 20px;">Transaction History</h2>
+            <div class="section">
+                <div class="budget" id="transactionHistory">No history yet. Go to Budgeting tab to set up.</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    /* =========================================
+   CALENDAR HISTORY STORAGE SYSTEM
+========================================= */
+
+function saveCalendarHistory(type, category, amount = 0, extra = {}) {
+
+    const history =
+        JSON.parse(localStorage.getItem("calendarHistory")) || [];
+
+    const now = new Date();
+
+    const entry = {
+
+        type: type,
+
+        category: category,
+
+        amount: amount,
+
+        date: now.toLocaleDateString(),
+
+        time: now.toLocaleTimeString(),
+
+        timestamp: now.getTime(),
+
+        fullDate: now.toLocaleString(),
+
+        ...extra
+    };
+
+    history.push(entry);
+
+    localStorage.setItem(
+        "calendarHistory",
+        JSON.stringify(history)
+    );
+}
+    document.addEventListener("DOMContentLoaded", () => {
+        const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+        if (!userProfile) return;
+
+        const fullName = `${userProfile.firstName} ${userProfile.lastName}`;
+
+        // Update full name
+        const nameEl = document.getElementById("fullName");
+        if (nameEl) nameEl.textContent = fullName;
+
+        // Update email
+        const emailEl = document.getElementById("userEmail");
+        if (emailEl) emailEl.textContent = userProfile.email;
+
+        // Update profile image
+        const imgEl = document.getElementById("navProfileImg");
+        if (imgEl) imgEl.src = userProfile.profileImg;
+    });
+    
+    document.getElementById("search").addEventListener("keydown", function(event) {
+        if(event.key === "Enter") {
+            const query = this.value.toLowerCase().trim();
+            const pages = {
+                "dashboard": "dashboard.html", "home": "dashboard.html",
+                "report": "report.html", "reports": "report.html",
+                "budget": "budgeting.html", "budgeting": "budgeting.html",
+                "setting": "settings.html", "settings": "settings.html",
+                "help": "help.html", "support": "help.html",
+                "calendar": "calendar.html", "date": "calendar.html",
+                "reminder": "reminder.html", "reminders": "reminder.html",
+                "documentation": "help.html",
+                "privacy": "reminder.html", "policy": "reminder.html",
+                "expense": "budgeting.html", "income": "budgeting.html",
+                "goal": "budgeting.html", "limit": "budgeting.html",
+                "terms": "settings.html", "use": "settings.html",
+                "logout": "homepage.html", "log out": "homepage.html"
+            };
+            for(let k in pages) {
+                if(query.includes(k)) { window.location.href = pages[k]; return; }
+            }
+            alert("No page found related to: " + query);
+        }
+    });
+
+    document.getElementById('delete-data').addEventListener('click', function () {
+    openDeleteModal();
+});
+
+function openDeleteModal() {
+    const modal = document.createElement("div");
+
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 9999;
+        width: 300px;
+        font-family: Arial;
+    `;
+
+    modal.innerHTML = `
+        <h3>Delete Data</h3>
+
+        <label><input type="checkbox" id="del-transactions"> Transactions</label><br>
+        <label><input type="checkbox" id="del-goals"> Savings Goals</label><br>
+        <label><input type="checkbox" id="del-budget"> Budget Limits</label><br><br>
+
+        <button id="confirm-delete" style="
+            background:red;
+            color:white;
+            padding:8px;
+            border:none;
+            width:100%;
+            cursor:pointer;
+            border-radius:5px;
+        ">Delete Selected</button>
+
+        <button id="close-delete" style="
+            margin-top:10px;
+            width:100%;
+            padding:8px;
+        ">Cancel</button>
+    `;
+
+    document.body.appendChild(modal);
+
+    // CLOSE BUTTON
+    document.getElementById("close-delete").addEventListener("click", () => {
+        document.body.removeChild(modal);
+    });
+
+    // CONFIRM DELETE
+    document.getElementById("confirm-delete").addEventListener("click", () => {
+
+        const delTransactions = document.getElementById("del-transactions").checked;
+        const delGoals = document.getElementById("del-goals").checked;
+        const delBudget = document.getElementById("del-budget").checked;
+
+        if (!delTransactions && !delGoals && !delBudget) {
+            alert("Please select at least one option.");
+            return;
+        }
+
+        if (delTransactions) {
+            localStorage.removeItem("transactions");
+            localStorage.removeItem("incomes");
+            localStorage.removeItem("expenses");
+        }
+
+        if (delGoals) {
+            localStorage.removeItem("allSavingsGoals");
+            localStorage.removeItem("financialGoalHistory");
+            localStorage.removeItem("savingsGoal");
+        }
+
+        if (delBudget) {
+            localStorage.removeItem("budgetCategories");
+            localStorage.removeItem("budgetLimit");
+            localStorage.removeItem("budgetProgress");
+        }
+
+        alert("Selected data deleted successfully!");
+        location.reload();
+    });
+}
+
+    const transactionHistorySection = document.getElementById("transactionHistory");
+    let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    let incomes = JSON.parse(localStorage.getItem("incomes")) || [];
+    let expenseChart = null;
+
+    function formatCurrency(amount) {
+        return '₱' + parseFloat(amount).toFixed(2);
+    }
+
+    function displayTransactionHistory() {
+        transactionHistorySection.innerHTML = "";
+        if(transactions.length === 0 && incomes.length === 0){
+            transactionHistorySection.textContent = "No history yet. Go to Budgeting tab to set up.";
+            return;
+        }
+        const table = document.createElement("table");
+        table.classList.add("transaction-table");
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Type</th><th>Category</th><th>Amount</th><th>Date</th><th>Time</th><th>Delete</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+        transactionHistorySection.appendChild(table);
+        const tbody = table.querySelector("tbody");
+        const allTransactions = transactions.map(t => ({
+    ...t,
+    _type: t.type
+}));
+
+allTransactions.sort((a, b) => {
+    return new Date(a.date + " " + a.time) - new Date(b.date + " " + b.time);
+});
+        allTransactions.forEach((t,index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${t._type}</td>
+                <td>${t.category}</td>
+                <td>${formatCurrency(t.amount)}</td>
+                <td>${t.date||""}</td>
+                <td>${t.time||""}</td>
+                <td><button class="delete-transaction" data-index="${index}" data-type="${t._type}">Delete</button></td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        document.querySelectorAll(".delete-transaction").forEach(btn=>{
+            btn.addEventListener("click", () => {
+                const idx = parseInt(btn.dataset.index);
+                const type = btn.dataset.type;
+                if(type === "income") incomes.splice(idx-transactions.length,1);
+                else transactions.splice(idx,1);
+                localStorage.setItem("transactions", JSON.stringify(transactions));
+                localStorage.setItem("incomes", JSON.stringify(incomes));
+                displayTransactionHistory();
+                generateChart();
+            });
+        });
+    }
+
+    function generateChart() {
+    const ctx = document.getElementById("expenseChart").getContext("2d");
+
+    const categoryTotals = {};
+
+    // Color palette
+    const colorPalette = [
+    "#FF6384",
+    "#36A2EB",
+    "#FFCE56",
+    "#4BC0C0",
+    "#9966FF",
+    "#FF9F40",
+    "#8BC34A",
+    "#E91E63",
+    "#009688",
+    "#3F51B5",
+    "#CDDC39",
+    "#795548",
+    "#607D8B",
+    "#673AB7",
+    "#FFC107",
+    "#00BCD4",
+    "#FF5722",
+    "#9C27B0"
+];
+
+    // Combine all transactions
+    const allData = [
+        ...transactions.map(t => ({ ...t, type: "expense" })),
+        ...incomes.map(i => ({ ...i, type: "income" }))
+    ];
+
+    // Compute totals per category
+    allData.forEach(item => {
+        if (!categoryTotals[item.category]) {
+            categoryTotals[item.category] = 0;
+        }
+        categoryTotals[item.category] += Number(item.amount);
+    });
+
+    const labels = Object.keys(categoryTotals);
+    const data = Object.values(categoryTotals);
+
+    // Assign different colors automatically
+    const colors = labels.map((_, index) =>
+        colorPalette[index % colorPalette.length]
+    );
+
+    // Destroy old chart before creating new one
+    if (expenseChart) expenseChart.destroy();
+
+    // Prevent empty chart
+    if (labels.length === 0) return;
+
+    expenseChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderColor: "#fff",
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                },
+                datalabels: {
+                    formatter: (value, context) => {
+                        const total = context.chart.data.datasets[0].data
+                        .reduce((a, b) => a + b, 0);
+                        const percent = ((value / total) * 100).toFixed(1);
+                        return `${percent}%`;
+                    },
+                    color: "#fff",
+                    font: {
+                        weight: "bold",
+                        size: 12
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+}
+
+    displayTransactionHistory();
+    generateChart();
+    document.getElementById("generate-tips").addEventListener("click", () => {
+
+    const allData = [
+        ...transactions.map(t => ({ ...t, type: "expense" })),
+        ...incomes.map(i => ({ ...i, type: "income" }))
+    ];
+
+    if (allData.length === 0) {
+        alert("No financial data available yet.");
+        return;
+    }
+
+    // Get oldest transaction date
+    const dates = allData
+        .filter(item => item.date)
+        .map(item => new Date(item.date));
+
+    if (dates.length === 0) {
+        alert("No valid transaction dates found.");
+        return;
+    }
+
+    const oldestDate = new Date(Math.min(...dates));
+    const currentDate = new Date();
+
+    // Calculate days difference
+    const diffTime = currentDate - oldestDate;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    // Require at least 7 days
+    if (diffDays < 7) {
+        alert("Tips will be available after 1 week of tracking your expenses and income.");
+        return;
+    }
+
+    // Calculate totals
+    const expenseTotals = {};
+    let totalExpenses = 0;
+    let totalIncome = 0;
+
+    transactions.forEach(t => {
+        expenseTotals[t.category] =
+            (expenseTotals[t.category] || 0) + Number(t.amount);
+
+        totalExpenses += Number(t.amount);
+    });
+
+    incomes.forEach(i => {
+        totalIncome += Number(i.amount);
+    });
+
+    // Find highest expense category
+    let highestCategory = "";
+    let highestAmount = 0;
+
+    for (let category in expenseTotals) {
+        if (expenseTotals[category] > highestAmount) {
+            highestAmount = expenseTotals[category];
+            highestCategory = category;
+        }
+    }
+
+    // Savings
+    const savings = totalIncome - totalExpenses;
+
+    // Expense percentage
+    const expensePercentage =
+        totalIncome > 0
+            ? ((totalExpenses / totalIncome) * 100).toFixed(1)
+            : 0;
+
+    // Generate tips
+    let tips = `📊 WEEKLY FINANCIAL REPORT & SMART TIPS\n\n`;
+
+    // Highest spending category
+    if (highestCategory) {
+        tips += `🔹 Highest Spending Category:\n`;
+        tips += `"${highestCategory}" = ₱${highestAmount.toFixed(2)}\n`;
+        tips += `Try setting a weekly limit for this category to avoid overspending.\n\n`;
+    }
+
+    // Savings or loss
+    if (savings > 0) {
+        tips += `💰 Savings Status:\n`;
+        tips += `You saved ₱${savings.toFixed(2)} this week.\n`;
+        tips += `Continue maintaining good spending habits and consider saving at least 20% of your income.\n\n`;
+    } else {
+        tips += `⚠ Budget Warning:\n`;
+        tips += `Your expenses exceeded your income by ₱${Math.abs(savings).toFixed(2)}.\n`;
+        tips += `Reduce unnecessary purchases and prioritize important expenses.\n\n`;
+    }
+
+    // Expense percentage analysis
+    tips += `📈 Expense Analysis:\n`;
+    tips += `You used ${expensePercentage}% of your income.\n`;
+
+    if (expensePercentage >= 90) {
+        tips += `This is very high. Avoid impulse buying and focus only on needs.\n\n`;
+    } else if (expensePercentage >= 70) {
+        tips += `Your spending is above the recommended level.\n`;
+        tips += `Try creating stricter spending limits next week.\n\n`;
+    } else if (expensePercentage >= 50) {
+        tips += `Your spending is moderate.\n`;
+        tips += `Keep balancing your expenses and savings.\n\n`;
+    } else {
+        tips += `Excellent budgeting! You are managing your finances wisely.\n\n`;
+    }
+
+    // Category-based smart tips
+    if (highestCategory.toLowerCase().includes("food")) {
+        tips += `🍔 Food Tip:\n`;
+        tips += `Consider meal planning or cooking at home more often to reduce food expenses.\n\n`;
+    }
+
+    if (highestCategory.toLowerCase().includes("shopping")) {
+        tips += `🛍 Shopping Tip:\n`;
+        tips += `Avoid unplanned purchases and compare prices before buying.\n\n`;
+    }
+
+    if (highestCategory.toLowerCase().includes("transport")) {
+        tips += `🚗 Transportation Tip:\n`;
+        tips += `Using public transportation or ride-sharing occasionally may help lower costs.\n\n`;
+    }
+
+    if (highestCategory.toLowerCase().includes("entertainment")) {
+        tips += `🎮 Entertainment Tip:\n`;
+        tips += `Set a fixed entertainment budget to avoid excessive leisure spending.\n\n`;
+    }
+
+    // General financial advice
+    tips += `📌 General Budgeting Tips:\n`;
+    tips += `• Track your expenses daily.\n`;
+    tips += `• Separate needs from wants.\n`;
+    tips += `• Build an emergency fund.\n`;
+    tips += `• Save before spending.\n`;
+    tips += `• Review your spending habits weekly.\n\n`;
+
+    tips += `✅ Continue recording transactions regularly for more accurate financial insights.`;
+
+    alert(tips);
+});
+</script>
+</body>
+</html> 

@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+    .body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #F9F9FA;
+
+    }
+
+    .profile {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        margin-bottom: 1em;
+        margin-left: 45px;
+    }
+
+    .sidebar {
+        width: 250px;
+        background-color: #2A0764;
+        padding: 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 30px;
+        color: white;
+        text-align: center;
+    }
+
+    .sidebar p {
+        color: white;
+        text-align: center;
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar a {
+        display: flex;
+        padding: 10px;
+        text-decoration: none;
+        color: white;
+        border-radius: 5px;
+        height: fit-content;
+    }
+
+    .sidebar a:hover {
+        color: #555;
+        background: #F5F5F5;
+    }
+
+    .sidebar i {
+        margin-right: 10px;
+    }
+
+    .dashboard-content {
+        margin-left: 300px;
+        padding: 0px;
+        font-size: 15px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .header h2 {
+        color: #333;
+    }
+
+    .header .user-info {
+        text-align: left;
+    }
+
+    .header i {
+        margin-right: 10px;
+        font-size: 20px;
+        color: #333;
+    }
+
+    .transaction-history-section {
+    align-items: center;
+    margin-left: 320px;
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 15px;
+    width: 880px;
+    background-color: #F9F9FA;
+    outline: 3px solid #1F054B;
+    border-radius: 20px;
+    line-height: 0.9;
+
+    height: 620px;
+
+    /* ✅ FIX SCROLL */
+    overflow-y: auto;
+    position: relative;
+}
+
+    .section .income {
+        background: #8CECA7;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+
+    .section .expense {
+        background: #EF5769 27%;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+
+    .section .saving {
+        background: #9E97D6;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+
+    .section .budget {
+        background: #F7F7F7;
+        border-radius: 5px;
+        padding: 30px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    .section .goal {
+        background: #F7F7F7;
+        border-radius: 5px;
+        padding: 30px;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+    /* Style for tables */
+    .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+    .data-table th,
+    .data-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .data-table th {
+        background-color: #f2f2f2;
+    }
+    .goal {
+    background: #F7F7F7;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 5px;
+    text-align: center;
+
+    /* ✅ NEW: scroll behavior */
+    max-height: 300px;
+    overflow-y: auto;
+}
+    .data-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f2f2f2;
+    z-index: 1;
+}
+</style>
+
+<body>
+    <div class="sidebar">
+        <a href="profile PT.html" style="background-color: #2A0764;">
+            <img id="navProfileImg" src="c:\Users\acer\Downloads\e183fad7-9c43-49e0-b3d7-2d4770ad4dfb.jpg" class="profile" alt="profile">
+            <i style="margin-top: 125px;" class="fa-solid fa-pen-to-square"></i>
+        </a>
+
+       <h2 id="fullName"></h2>
+<p id="userEmail"></p>>
+        <ul>
+            <li><a href="dashboard.html"><i class="fa-solid fa-house"></i>Dashboard</a></li>
+            <li><a href="report.html"><i class="fa-solid fa-chart-line"></i>Reports</a></li>
+            <li><a href="budgeting.html"><i class="fa-solid fa-wallet"></i>Budgeting</a></li>
+            <p>_____________________________</p>
+            <li><a href="settings.html"><i class="fa-solid fa-gear"></i>Settings</a></li>
+            <li><a href="help.html"><i class="fa-solid fa-circle-question"></i>Help</a></li>
+            <li><a href="" id="delete-data"><i class="fa-solid fa-trash"></i>Delete all data</a></li>
+            <li><a href="homepage.html"><i class="fa-solid fa-right-from-bracket"></i>Log out</a></li>
+        </ul>
+    </div>
+    <div id="dashboard-content" class="dashboard-content">
+        <div class="header">
+            <h2 id="page-title">Dashboard</h2>
+            <div class="user-info">
+                <input type="text" id="search" placeholder="&#128269; Search here...">
+                <i class="fa-solid fa-bell"></i>
+                <a href="calendar.html">
+                    <i class="fa-solid fa-calendar"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="transaction-history-section">
+            <h2>Financial Snapshot: November 2025</h2>
+            <div class="section">
+                <div class="income">Total Income <br> 0.00 </div>
+            </div>
+            <div class="section">
+                <div class="expense">Total Expense <br> 0.00 </div>
+            </div>
+            <div class="section">
+                <div class="saving">Total Savings <br> 0.00 </div>
+            </div>
+            <h2>
+                <br>Budget Progress
+            </h2>
+            <div class="section">
+                <div class="budget">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Budget Limit</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="budget-category"></td>
+                                <td id="budget-amount"></td>
+                                <td id="budget-status"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <h2>
+                <br>Savings Goal
+            </h2>
+            <div class="section">
+                <div class="goal">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Goal Name</th>
+                                <th>Amount</th>
+                                <th>Saved</th>
+                                <th>Remaining</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="goals-table-body">
+
+</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* =========================================
+   CALENDAR HISTORY STORAGE SYSTEM
+========================================= */
+
+function saveCalendarHistory(type, category, amount = 0, extra = {}) {
+
+    const history =
+        JSON.parse(localStorage.getItem("calendarHistory")) || [];
+
+    const now = new Date();
+
+    const entry = {
+
+        type: type,
+
+        category: category,
+
+        amount: amount,
+
+        date: now.toLocaleDateString(),
+
+        time: now.toLocaleTimeString(),
+
+        timestamp: now.getTime(),
+
+        fullDate: now.toLocaleString(),
+
+        ...extra
+    };
+
+    history.push(entry);
+
+    localStorage.setItem(
+        "calendarHistory",
+        JSON.stringify(history)
+    );
+}
+document.addEventListener("DOMContentLoaded", () => {
+
+    // =========================
+    // USER PROFILE
+    // =========================
+    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+    if (userProfile) {
+
+        const fullName =
+            `${userProfile.firstName} ${userProfile.lastName}`;
+
+        // Full name
+        const nameEl =
+            document.getElementById("fullName");
+
+        if (nameEl) {
+            nameEl.textContent = fullName;
+        }
+
+        // Email
+        const emailEl =
+            document.getElementById("userEmail");
+
+        if (emailEl) {
+            emailEl.textContent = userProfile.email;
+        }
+
+        // Profile image
+        const imgEl =
+            document.getElementById("navProfileImg");
+
+        if (imgEl && userProfile.profileImg) {
+            imgEl.src = userProfile.profileImg;
+        }
+    }
+
+});
+
+        document.getElementById("search").addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        const query = this.value.toLowerCase().trim();
+
+        // Keyword-to-page mapping
+        const pages = {
+            "dashboard": "dashboard.html",
+            "home": "dashboard.html",
+
+            "report": "report.html",
+            "reports": "report.html",
+
+            "budget": "budgeting.html",
+            "budgeting": "budgeting.html",
+
+            "setting": "settings.html",
+            "settings": "settings.html",
+
+            "help": "help.html",
+            "support": "help.html",
+
+            "calendar": "calendar.html",
+            "date": "calendar.html",
+
+            "reminder": "reminder.html",
+            "reminders": "reminder.html",
+
+            "help": "help.html",
+            "documentation": "help.html",
+
+            "privacy": "reminder.html",
+            "policy": "reminder.html",
+
+            "enpense": "budgeting.html",
+            "income": "budgeting.html",
+            "goal": "budgeting.html",
+            "limit": "budgeting.html",
+
+            "terms": "settings.html",
+            "use": "settings.html",
+            "term": "settings.html",
+            "conditions": "settings.html",
+
+            "logout": "homepage.html",
+            "log out": "homepage.html"
+        };
+
+        // Find matching page
+        for (let keyword in pages) {
+            if (query.includes(keyword)) {
+                window.location.href = pages[keyword];
+                return;
+            }
+        }
+
+        // If no match found
+        alert("No page found related to: " + query);
+    }
+});
+        document.getElementById("delete-data").addEventListener("click", function (e) {
+    e.preventDefault();
+    openDeleteModal();
+});
+
+function openDeleteModal() {
+    const modal = document.createElement("div");
+
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 9999;
+        width: 300px;
+        font-family: Arial;
+    `;
+
+    modal.innerHTML = `
+        <h3>Delete Data</h3>
+
+        <label><input type="checkbox" id="del-transactions"> Transactions</label><br>
+        <label><input type="checkbox" id="del-goals"> Savings Goals</label><br>
+        <label><input type="checkbox" id="del-budget"> Budget Limits</label><br><br>
+
+        <button id="confirm-delete" style="
+            background:red;
+            color:white;
+            padding:8px;
+            border:none;
+            width:100%;
+            cursor:pointer;
+            border-radius:5px;
+        ">Delete Selected</button>
+
+        <button id="close-delete" style="
+            margin-top:10px;
+            width:100%;
+            padding:8px;
+        ">Cancel</button>
+    `;
+
+    document.body.appendChild(modal);
+
+    // CLOSE
+    modal.querySelector("#close-delete").addEventListener("click", () => {
+        document.body.removeChild(modal);
+    });
+
+    // CONFIRM DELETE
+    modal.querySelector("#confirm-delete").addEventListener("click", () => {
+
+        const delTransactions = document.getElementById("del-transactions").checked;
+        const delGoals = document.getElementById("del-goals").checked;
+        const delBudget = document.getElementById("del-budget").checked;
+
+        if (!delTransactions && !delGoals && !delBudget) {
+            alert("Please select at least one option.");
+            return;
+        }
+
+        if (delTransactions) {
+            localStorage.removeItem("transactions");
+            localStorage.removeItem("totalIncome");
+            localStorage.removeItem("totalExpense");
+        }
+
+        if (delGoals) {
+            localStorage.removeItem("allSavingsGoals");
+            localStorage.removeItem("financialGoalHistory");
+            localStorage.removeItem("savingsGoal");
+        }
+
+        if (delBudget) {
+            localStorage.removeItem("budgetCategories");
+            localStorage.removeItem("budgetLimit");
+            localStorage.removeItem("budgetProgress");
+        }
+
+        alert("Selected data deleted successfully!");
+        location.reload();
+    });
+}
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to retrieve data from local storage
+            function getData(key) {
+                return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : null;
+            }
+            function saveData(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+            // Function to format numbers as currency
+            function formatCurrency(amount) {
+                return '' + parseFloat(amount).toFixed(2);
+            }
+            function cleanupCompletedGoals() {
+
+    let allGoals = getData("allSavingsGoals") || [];
+    let history = getData("financialGoalHistory") || [];
+
+    const activeGoals = [];
+
+    allGoals.forEach(goal => {
+        if (goal.saved >= goal.amount) {
+
+            history.push({
+                name: goal.name,
+                amount: goal.amount,
+                saved: goal.saved,
+                status: "Completed",
+                createdAt: new Date().toLocaleString()
+            });
+
+        } else {
+            activeGoals.push(goal);
+        }
+    });
+
+    saveData("allSavingsGoals", activeGoals);
+    saveData("financialGoalHistory", history);
+}
+cleanupCompletedGoals();
+function displaySavingsGoal(allGoals) {
+
+    const goalsTableBody =
+        document.getElementById(
+            "goals-table-body"
+        );
+
+    goalsTableBody.innerHTML = "";
+
+    if (
+        !allGoals ||
+        allGoals.length === 0
+    ) {
+
+        goalsTableBody.innerHTML = `
+            <tr>
+                <td colspan="5"
+                    style="
+                        text-align:center;
+                        padding:20px;
+                    ">
+                    No savings goals yet.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    allGoals.forEach((goal, index) => {
+
+        if (!goal.entries) {
+
+            goal.entries = [];
+        }
+
+        const remaining =
+            goal.amount - goal.saved;
+
+        const isFull =
+            goal.entries.length >= 3;
+
+        const status =
+            remaining <= 0
+            ? "✅ Completed"
+            : "⏳ In Progress";
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>${goal.name}</td>
+
+            <td>
+                ${formatCurrency(goal.amount)}
+            </td>
+
+            <td>
+                ${formatCurrency(goal.saved)}
+            </td>
+
+            <td>
+                ${formatCurrency(remaining)}
+            </td>
+
+            <td>
+
+                <div style="
+                    display:flex;
+                    flex-direction:column;
+                    gap:5px;
+                ">
+
+                    <div style="
+                        display:flex;
+                        gap:5px;
+                    ">
+
+                        <button
+                            class="add-money-btn"
+                            data-index="${index}">
+                            Add
+                        </button>
+
+                        <button
+                            class="deduct-money-btn"
+                            data-index="${index}">
+                            Deduct
+                        </button>
+
+                    </div>
+
+                    <div style="
+                        font-size:12px;
+                        font-weight:bold;
+                        color:${isFull ? 'green' : '#333'};
+                    ">
+                        ${goal.status === "" ? "Completed" : goal.entries.length + "/3"}
+                    </div>
+
+                    <div style="
+                        font-size:12px;
+                        font-weight:bold;
+                        color:${remaining <= 0 ? 'green' : 'orange'};
+                    ">
+                        ${status}
+                    </div>
+
+                </div>
+
+            </td>
+        `;
+
+        goalsTableBody.appendChild(row);
+    });
+
+    // =========================================
+    // ADD MONEY
+    // =========================================
+    document.querySelectorAll(
+        ".add-money-btn"
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const index =
+                    this.dataset.index;
+
+                let allGoals =
+                    getData(
+                        "allSavingsGoals"
+                    ) || [];
+
+                let goal =
+                    allGoals[index];
+
+                if (
+                    goal.entries.length >= 3
+                ) {
+
+                    alert(
+                        "Maximum of 3 entries reached."
+                    );
+
+                    return;
+                }
+
+                const amount =
+                    parseFloat(
+                        prompt(
+                            "Enter amount to add:"
+                        )
+                    );
+
+                if (
+                    !isNaN(amount) &&
+                    amount > 0
+                ) {
+
+                    goal.entries.push(amount);
+
+                    goal.saved =
+                        goal.entries.reduce(
+                            (a, b) => a + b,
+                            0
+                        );
+                        saveCalendarHistory(
+    "Goal Deduction",
+    goal.name,
+    originalDeductAmount
+);
+
+                    if (
+                        goal.saved >= goal.amount
+                    ) {
+
+                        goal.status =
+                            "Completed";
+                    }
+
+                    localStorage.setItem(
+                        "allSavingsGoals",
+                        JSON.stringify(allGoals)
+                    );
+
+                    displaySavingsGoal(
+                        allGoals
+                    );
+                }
+            }
+        );
+    });
+
+    // =========================================
+    // DEDUCT MONEY
+    // =========================================
+    document.querySelectorAll(
+        ".deduct-money-btn"
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const index =
+                    this.dataset.index;
+
+                let allGoals =
+                    getData(
+                        "allSavingsGoals"
+                    ) || [];
+
+                let goal =
+                    allGoals[index];
+
+                let deductAmount =
+    parseFloat(
+        prompt(
+            "Enter amount to deduct:"
+        )
+    );
+
+const originalDeductAmount = deductAmount;
+
+                if (
+                    isNaN(deductAmount) ||
+                    deductAmount <= 0
+                ) {
+
+                    alert("Invalid amount.");
+
+                    return;
+                }
+
+                if (
+                    deductAmount >
+                    goal.saved
+                ) {
+
+                    alert(
+                        "Deduction exceeds saved amount."
+                    );
+
+                    return;
+                }
+
+                for (
+                    let i =
+                        goal.entries.length - 1;
+                    i >= 0;
+                    i--
+                ) {
+
+                    if (
+                        deductAmount <= 0
+                    ) break;
+
+                    let used =
+                        Math.min(
+                            goal.entries[i],
+                            deductAmount
+                        );
+
+                    goal.entries[i] -= used;
+
+                    deductAmount -= used;
+
+                    if (
+                        goal.entries[i] <= 0
+                    ) {
+
+                        goal.entries.splice(
+                            i,
+                            1
+                        );
+                    }
+                }
+
+                goal.saved =
+                    goal.entries.reduce(
+                        (a, b) => a + b,
+                        0);
+                        saveCalendarHistory(
+    "Goal Deduction",
+    goal.name,
+    deductAmount
+);
+                    // CHECK IF GOAL IS COMPLETED
+if (goal.saved >= goal.amount) {
+
+    // 1. MARK COMPLETED
+    goal.status = "Completed";
+
+    // 2. MOVE TO HISTORY
+    let history = getData("financialGoalHistory") || [];
+
+    history.push({
+        name: goal.name,
+        amount: goal.amount,
+        saved: goal.saved,
+        status: "Completed",
+        createdAt: new Date().toLocaleString()
+    });
+
+    saveData("financialGoalHistory", history);
+
+    // 3. REMOVE FROM ACTIVE GOALS (IMPORTANT: frees slot)
+    allGoals.splice(index, 1);
+    saveData("allSavingsGoals", allGoals);
+
+    // 4. UPDATE UI
+    displaySavingsGoal(allGoals);
+
+    alert("🎉 Goal completed and moved to history!");
+
+    return;
+}
+
+                localStorage.setItem(
+                    "allSavingsGoals",
+                    JSON.stringify(allGoals)
+                );
+
+                displaySavingsGoal(
+                    allGoals
+                );
+            }
+        );
+    });
+addMoneyBtn.addEventListener('click', function () {
+
+    // ❌ BLOCK IF 3 ENTRIES ALREADY EXIST
+    if (savingsGoal.entries.length >= 3) {
+        alert("Maximum of 3 savings entries reached. Deduct or complete one first.");
+        return;
+    }
+
+    const addAmount = parseFloat(prompt('Enter amount to add to savings:'));
+
+    if (!isNaN(addAmount) && addAmount > 0) {
+
+        // add entry
+        savingsGoal.entries.push(addAmount);
+
+        // recompute saved
+        savingsGoal.saved = savingsGoal.entries.reduce((a, b) => a + b, 0);
+
+        localStorage.setItem('savingsGoal', JSON.stringify(savingsGoal));
+        displaySavingsGoal(savingsGoal, savingsGoalEl);
+
+    } else {
+        alert('Invalid amount.');
+    }
+
+    if (savingsGoal.entries.length >= 3) {
+    localStorage.setItem("savingsLimitReached", "true");
+
+    localStorage.setItem("savingsLimitReached", "false");
+}
+});
+            }
+            // Function to display budget progress
+            function displayBudgetProgress(budgetLimit, budgetProgressEl) {
+                const budgetCategoryEl = document.getElementById('budget-category');
+                const budgetAmountEl = document.getElementById('budget-amount');
+                const budgetStatusEl = document.getElementById('budget-status');
+                if (budgetLimit) {
+                    budgetCategoryEl.textContent = budgetLimit.category;
+                    budgetAmountEl.textContent = formatCurrency(budgetLimit.amount);
+                    // Check if budget limit is met (example logic, adjust as needed)
+                    let totalExpense = getData('totalExpense') || 0;
+                    if (totalExpense == budgetLimit.amount) {
+                        budgetStatusEl.textContent = 'Budget Limit Met!';
+                    } else if (totalExpense > budgetLimit.amount) {
+                        budgetStatusEl.textContent = 'Budget Limit Not Met!';
+                    } else {
+                        budgetStatusEl.textContent = 'You need to meet your budget limit!';
+                    }
+                } else {
+                    budgetCategoryEl.textContent = 'No budgets set. Go to Budgeting tab to set up.';
+                    budgetAmountEl.textContent = '';
+                    budgetStatusEl.textContent = '';
+                }
+            }
+            // Get elements to update
+            const totalIncomeEl = document.querySelector('.income');
+            const totalExpenseEl = document.querySelector('.expense');
+            const totalSavingsEl = document.querySelector('.saving');
+            const budgetProgressEl = document.querySelector('.budget');
+            const savingsGoalEl = document.querySelector('.goal');
+            // Load and display data
+            let totalIncome = getData('totalIncome') || 0;
+            let totalExpense = getData('totalExpense') || 0;
+            let allGoals =
+    getData("allSavingsGoals") || [];
+            let budgetLimit = getData('budgetLimit') || null;
+            // Calculate total savings
+            let totalSavings = totalIncome - totalExpense;
+            localStorage.setItem('totalSavings', totalSavings);
+            // Update dashboard elements
+            totalIncomeEl.innerHTML = 'Total Income <br>' + formatCurrency(totalIncome);
+            totalExpenseEl.innerHTML = 'Total Expense <br>' + formatCurrency(totalExpense);
+            totalSavingsEl.innerHTML = 'Total Savings <br>' + formatCurrency(totalSavings);
+            // Display savings goal
+            displaySavingsGoal(allGoals);
+            // Display budget progress
+            displayBudgetProgress(budgetLimit, budgetProgressEl);
+        });
+        
+    </script>
+</body>
+</html>
